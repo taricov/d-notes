@@ -8,7 +8,7 @@ import { CreateNote, GetNotes } from '../../logic/daftraApi'
 // import { currPageNotes } from '../../logic/utils'
 import type { NoteDataApi, User } from '../../logic/types'
 import { GetUser } from '~/logic/dbSDK'
-import { extractBody, extractColor, extractPath } from '~/logic/utils'
+import { extractBody, extractColor, extractPath, getUserData } from '~/logic/utils'
 
 const tabs = ref<any>('recently-added')
 // const filtered = ref<Note[]>([])
@@ -48,18 +48,23 @@ onMounted(async () => {
   thisPageNotes()
   loadingNotes.value = true
   // const { userEmail, userSub } = getSecrets()
-  function getStorageValuePromise(key: string) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(key, resolve)
-    })
-  }
+  // function getStorageValuePromise(key: string) {
+  //   return new Promise((resolve) => {
+  //     chrome.storage.sync.get(key, resolve)
+  //   })
+  // }
 
-  const chromeStorage1: any = await getStorageValuePromise('conn')
-  const chromeStorage2: any = await getStorageValuePromise('email')
-  isConnected.value = chromeStorage1.conn
-  userE.value = chromeStorage2.email
+  const sec1: any = await getUserData('userSub')
+  const sec2: any = await getUserData('apikey')
+  const sec3: any = await getUserData('userEmail')
+
+  // const chromeStorage1: any = await getStorageValuePromise('conn')
+  // const chromeStorage2: any = await getStorageValuePromise('email')
+  isConnected.value = !!sec1 && !!sec2
+  userE.value = sec3
+  console.log('Connected', isConnected.value, userE.value)
   if (isConnected && userE.value) {
-    const user: User = await GetUser('email', userE.value)
+    const user: User = await GetUser('email', userE.value.userEmail)
     // console.log(user)
     notingDisabled.value = false
     moduleKey.value = user.documents[0].note_module_key
@@ -179,7 +184,7 @@ whenever(keys['\\'], () => {
             value="page-notes"
           >
             <v-container class="!bg-slate-100 !bg-opacity-2 text-center ">
-              <!-- <v-progress-circular v-show="loadingNotes" color="green" indeterminate /> -->
+              <v-progress-circular v-show="loadingNotes" color="green" indeterminate />
               <p v-show="renderError !== null" class="w-full text-center text-red-500 font-semibold">
                 {{ renderError }}
               </p>
