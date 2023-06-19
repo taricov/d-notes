@@ -1,7 +1,7 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
 import connectSound from '../assets/sound effects/connected2.mp3'
-import { getSecrets, getUserData, setUserData } from '../logic/utils'
+import { getUserData, setUserData } from '../logic/utils'
 import { CreateUser, GetUser } from '../logic/dbSDK'
 import type { User } from '../logic/types'
 import { CreateNoteModule, GetAllWorkflows, GetSiteInfo } from '~/logic/daftraApi'
@@ -30,14 +30,17 @@ const userSecrets = ref<{ userEmail: string; apikey: string; noteModuleKey: stri
 
 onMounted(async () => {
   // isConnected.value = true
-  const { userEmail, userSub } = getSecrets()
+  // const { userEmail, userSub } = getSecrets()
   // console.log(userEmail, userSub)
   // checking for user secret
-  if (userSub) {
+  const sec1: any = await getUserData('userSub')
+  const sec2: any = await getUserData('apikey')
+  const sec3: any = await getUserData('userEmail')
+  isConnected.value = !!sec1 && !!sec2
+  if (sec1.userSub) {
     console.log('we!')
-    userSecrets.value.userEmail = userEmail
-    userSecrets.value.userSub = userSub
-    isConnected.value = true
+    userSecrets.value.userEmail = sec3.userEmail
+    userSecrets.value.userSub = sec1.userSub
     // GET user data
     const user: any = await GetUser('email', userSecrets.value.userEmail)
     console.log('existing user: ', user)

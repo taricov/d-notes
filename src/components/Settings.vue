@@ -1,6 +1,6 @@
 <!-- eslint-disable no-console -->
 <script setup lang="ts">
-import { getSecrets } from '~/logic/utils'
+import { getUserData } from '~/logic/utils'
 
 defineProps({ openSettings: Boolean })
 // const connected = ref<boolean>(false)
@@ -10,11 +10,14 @@ const currtheme = ref<string | null>(null)
 const currLang = ref<string>('en')
 const soundToggle = ref<Boolean>(true)
 
-onMounted(() => {
+onMounted(async () => {
   try {
-    const { userSub } = getSecrets()
+    // const { userSub } = getSecrets()
+    const sec1: any = await getUserData('userSub')
+    // const sec2: any = await getUserData('apikey')
+    // const sec3: any = await getUserData('userEmail')
 
-    businessNameKnown.value = userSub || 'Notes'
+    businessNameKnown.value = sec1.userSub || 'Notes'
     // currtheme.value = theme || 'dark'
     // connected.value = !!noteModuleKey
   }
