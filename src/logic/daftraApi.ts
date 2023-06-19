@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { getSecrets } from './utils'
 import type { NoteDataApi, SecretsTypes, WorkflowDataApi } from './types'
 
@@ -36,8 +37,10 @@ export const GetNotes = async (userSub: string, apikey: string, noteModuleKey: s
     },
   })
   // const data = await res.json()
+  console.log(res)
   return res
 }
+
 // Creat the D-Note Module
 export const CreateNoteModule = async ({ userSub, apikey }: Pick<SecretsTypes, 'userSub' | 'apikey'>): Promise<Response> => {
   // const { userSub, apikey } = getSecrets()

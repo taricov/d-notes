@@ -4,6 +4,29 @@ import type { Note, SecretsTypes } from './types'
 
 // const $cookies = inject<VueCookies>('$cookies')
 
+export function setUserData(userData: any) {
+  console.log('Value is set', userData)
+  // chrome.storage.local.set(userData).then(() => {
+  // })
+  chrome.storage.local.set(userData)
+  // .then(() => {
+  //   console.log('Value is set')
+  // })
+}
+export function getUserData(key: string) {
+  // console.log('Value to get',)
+  return new Promise((resolve) => {
+    chrome.storage.local.get(key, resolve)
+  // chrome.storage.local.get(['key']).then((result: any) => {
+  //   console.log(`Value currently is ${result.key}`)
+  // })
+  })
+}
+// return new Promise(() => {
+// console.log('first lot', userData)
+// chrome.storage.sync.set(userData)
+// console.log('second lot', userData)
+// })
 // Set Stored secrets from cookie
 export const setSecrets = ({ userEmail, userSub }: SecretsTypes): void => {
   const sData = { userEmail, userSub }

@@ -44,7 +44,7 @@ export async function getManifest() {
     content_scripts: [
       {
         matches: [
-          '<all_urls>',
+          'https://*.daftra.com/*',
         ],
         js: [
           'dist/contentScripts/index.global.js',

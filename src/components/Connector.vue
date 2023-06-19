@@ -1,7 +1,7 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
 import connectSound from '../assets/sound effects/connected2.mp3'
-import { getSecrets, setSecrets } from '../logic/utils'
+import { getSecrets, getUserData, setUserData } from '../logic/utils'
 import { CreateUser, GetUser } from '../logic/dbSDK'
 import type { User } from '../logic/types'
 import { CreateNoteModule, GetAllWorkflows, GetSiteInfo } from '~/logic/daftraApi'
@@ -59,6 +59,8 @@ async function submit() {
   loading.value = true
   const connecedSound = new Audio(connectSound)
   const { apikey, userSub } = userSecrets.value
+  // console.log(userSecrets.value)
+  // console.log({ ...userSecrets.value })
   // if (userEmail === getSecrets().userEmail && userSub === getSecrets().userSub) {
   // }
   const user: User = await GetUser('subdomain', userSub)
@@ -92,7 +94,13 @@ async function submit() {
     const userCreated = await CreateUser({ daftra_site_id: `${id}`, business_name, first_name, last_name, subdomain: subdomain.split('.')[0], address1, address2, city, state, phone1, phone2, lang: 'en', country_code, currency_code, email, bn1, api_key: userSecrets.value.apikey, note_module_key: userSecrets.value.noteModuleKey, prefer_dark: true })
     console.log(userCreated)
     connecedSound.play()
-    setSecrets(userSecrets.value)
+    // setSecrets(userSecrets.value)
+    // const settingData = await ({ apikey: userSecrets.value.apikey })
+    // console.log('before setting userdata')
+    // setUserData({ ...userSecrets.value })
+
+    const userEmail: any = await getUserData('email')
+    console.log(userEmail)
     console.log('user created successfully')
   }
   userSecrets.value.noteModuleKey = user.documents[0].noteModuleKey
@@ -100,8 +108,10 @@ async function submit() {
   isConnected.value = true
   loading.value = false
   connectPanel.value = []
-  setSecrets(userSecrets.value)
-  console.log('user fetched successfully')
+  console.log('before setting userdata')
+  setUserData({ ...userSecrets.value })
+  // setSecrets(userSecrets.value)
+  // console.log('user fetched successfully')
   await connecedSound.play()
 }
 

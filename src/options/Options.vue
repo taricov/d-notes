@@ -5,7 +5,7 @@ import 'vuetify/styles'
 import type { Note, User } from '~/logic/types'
 import { GetNotes } from '~/logic/daftraApi'
 import { GetUser } from '~/logic/dbSDK'
-import { extractBody, extractPath, extractTags } from '~/logic/utils'
+import { extractBody, extractPath, extractTags, getUserData } from '~/logic/utils'
 
 const page = ref<Number>(1)
 const notesPerPage = ref<Number>(3)
@@ -15,7 +15,7 @@ const apiNotes = ref<any>([])
 const filteredNotes = ref<Note[]>([])
 const loadingNotes = ref<Boolean>(false)
 const userE = ref<any>('')
-const isConnected = ref<any>(true)
+const isConnected = ref<any>(false)
 const allTags = ref<String[]>(['work', 'invoice', 'inquiry', 'new hire'])
 const allColors = ref<Array<{ label: String; afterEl: String }>>([
   { label: 'red', afterEl: 'after:content-[""] after:top-2/6 after:right-5/8 after:w-3 after-h-3 after:relative after:rounded-full after:bg-red-400 relative' },
@@ -78,22 +78,25 @@ const paginatedData = () => {
 
 onMounted(async () => {
   loadingNotes.value = true
-  function getStorageValuePromise(key: string) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(key, resolve)
-    })
-  }
+  // function getStorageValuePromise(key: string) {
+  //   return new Promise((resolve) => {
+  //     chrome.storage.sync.get(key, resolve)
+  //   })
+  // }
 
-  const chromeStorage1: any = await getStorageValuePromise('conn')
-  const chromeStorage2: any = await getStorageValuePromise('email')
-
-  isConnected.value = chromeStorage1.conn
-  userE.value = chromeStorage2.email
+  const sec1: any = await getUserData('userSub')
+  const sec2: any = await getUserData('apikey')
+  const sec3: any = await getUserData('userEmail')
+  isConnected.value = !!sec1 && !!sec2
+  userE.value = sec3
+  // console.log(sec1, sec2, isConnected.value, userE.value)
+  // console.log(isConnected.value, userE.value)
   // console.log(userE.value, isConnected.value)
   // const { userEmail, noteModuleKey, userSub, apikey } = getSecrets()
   if (isConnected && userE.value) {
-    const user: User = await GetUser('email', userE.value)
-    // console.log(user.documents[0])
+    // console.log('authed', userE.value.userEmail)
+    const user: User = await GetUser('email', userE.value.userEmail)
+    console.log(user.documents[0])
     moduleKey.value = user.documents[0].note_module_key
     apikey.value = user.documents[0].api_key
     subD.value = user.documents[0].subdomain
