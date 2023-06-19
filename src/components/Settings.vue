@@ -1,6 +1,6 @@
 <!-- eslint-disable no-console -->
 <script setup lang="ts">
-import { getUserData } from '~/logic/utils'
+import { getUserData, setUserData } from '~/logic/utils'
 
 defineProps({ openSettings: Boolean })
 // const connected = ref<boolean>(false)
@@ -14,6 +14,7 @@ onMounted(async () => {
   try {
     // const { userSub } = getSecrets()
     const sec1: any = await getUserData('userSub')
+    console.log(sec1)
     // const sec2: any = await getUserData('apikey')
     // const sec3: any = await getUserData('userEmail')
 
@@ -37,12 +38,17 @@ const toggleLang = () => {
   console.log(currLang.value)
 }
 const resetWarning = ref<Boolean>(false)
-const resetSecrets = () => {
+const resetSecrets = async () => {
   resetWarning.value = false
   setTimeout(() => {
     window.location.reload()
   }, 1000)
-  localStorage.removeItem('connector-data')
+  // localStorage.removeItem('connector-data')
+  setUserData({ apikey: null, userSub: null, userEmail: null })
+  const sec1: any = await getUserData('userSub')
+  const sec2: any = await getUserData('apikey')
+  const sec3: any = await getUserData('userEmail')
+  console.log(sec1, sec2, sec3)
 }
 </script>
 

@@ -8,6 +8,7 @@ import { CreateNoteModule, GetAllWorkflows, GetSiteInfo } from '~/logic/daftraAp
 /* eslint no-console: */
 // const panel = ref<number[]>([1, 0])
 const isDisabled = ref<boolean>(false)
+const hint = ref<boolean>(false)
 const returnedError = ref<any>()
 const isConnected = ref<boolean>(false)
 const snackbar = ref<boolean>(false)
@@ -36,7 +37,9 @@ onMounted(async () => {
   const sec1: any = await getUserData('userSub')
   const sec2: any = await getUserData('apikey')
   const sec3: any = await getUserData('userEmail')
-  isConnected.value = !!sec1 && !!sec2
+  isConnected.value = !!sec1.userSub && !!sec2.apikey
+  console.log(sec1, sec2, sec3, isConnected.value)
+
   if (sec1.userSub) {
     console.log('we!')
     userSecrets.value.userEmail = sec3.userEmail
@@ -113,6 +116,10 @@ async function submit() {
   connectPanel.value = []
   console.log('before setting userdata')
   setUserData({ ...userSecrets.value })
+  hint.value = true
+  setTimeout(() => {
+    window.location.reload()
+  }, 2000)
   // setSecrets(userSecrets.value)
   // console.log('user fetched successfully')
   await connecedSound.play()
@@ -170,6 +177,7 @@ async function submit() {
         <div v-if="!isConnected" class="w-full text-center">
           Connect
         </div>
+        <sub v-if="hint">Reloading...</sub>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
         <v-sheet max-width="1000" class="mx-auto bg-transparent ">
