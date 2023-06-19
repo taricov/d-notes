@@ -2,25 +2,29 @@
 <script setup lang="ts">
 import { GetUser } from '~/logic/dbSDK'
 import type { User } from '~/logic/types'
-import { getSecrets } from '~/logic/utils'
+import { getUserData } from '~/logic/utils'
 
-const isConnected = ref<Boolean>(true)
+const isConnected = ref<Boolean>(false)
 const bizName = ref<String>('')
 // const currtheme = ref<String>('')
 // const currLang = ref<String>('')
 const color = ref<String>('')
 
 onMounted(async () => {
-  const { userEmail, userSub } = getSecrets()
-  bizName.value = userSub
+  // const { userEmail, userSub } = getSecrets()
+  const sec1: any = await getUserData('userSub')
+  // const sec2: any = await getUserData('apikey')
+  const sec3: any = await getUserData('userEmail')
+  bizName.value = sec1
+  isConnected.value = !!sec1 && !!sec3
   // currtheme.value = theme
   // currLang.value = lang
   // isConnected.value = connectionStatus
-  const user: User = await GetUser('email', userEmail)
-  if (+user.total === 0)
-    isConnected.value = false
+  const user: User = await GetUser('email', sec3.userEmail)
+  if (+user.total !== 0)
+    isConnected.value = true
   color.value = isConnected.value ? 'text-emerald-500' : 'text-red-500'
-  chrom.storage.sync.set({ conn: isConnected.value, email: userEmail })
+  // chrome.storage.local.set({ conn: isConnected.value, email: sec2.userEmail })
 })
 
 const openOptionsPage = () => {
