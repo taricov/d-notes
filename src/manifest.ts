@@ -38,7 +38,7 @@ export async function getManifest() {
     permissions: [
       'tabs',
       'storage',
-      'activeTab',
+      // 'activeTab',
     ],
     host_permissions: ['*://*/*'],
     content_scripts: [
@@ -54,7 +54,10 @@ export async function getManifest() {
     web_accessible_resources: [
       {
         resources: ['dist/contentScripts/style.css'],
-        matches: ['<all_urls>'],
+        matches: [
+          // '<all_urls>'
+          'https://*.daftra.com/*',
+        ],
       },
     ],
     content_security_policy: {
