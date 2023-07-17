@@ -40,7 +40,7 @@ export async function getManifest() {
       'storage',
       // 'activeTab',
     ],
-    host_permissions: ['*://*/*'],
+    // host_permissions: ['*://*/*'],
     content_scripts: [
       {
         matches: [
