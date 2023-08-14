@@ -55,7 +55,7 @@ export async function getManifest() {
       {
         resources: ['dist/contentScripts/style.css'],
         matches: [
-          // '<all_urls>'
+          // '<all_urls>'mkf
           'https://*.daftra.com/*',
         ],
       },
