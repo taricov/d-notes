@@ -16,7 +16,7 @@ let editedNote: any
 <template>
   <v-card
     variant="tonal"
-    class="group !bg-slate-900 !text-slate-300 !transition-all duration-300 shadow-lg hover:-translate-y-1 transform !z-10"
+    class="!min-h-[148px] group !bg-slate-900 !text-slate-300 !transition-all duration-300 shadow-lg hover:-translate-y-1 transform !z-10"
   >
     <div class="group-hover:opacity-100 opacity-30 mt-4 transition duration-300">
       {{ num }}
@@ -34,7 +34,7 @@ let editedNote: any
         {{ author }}
       </p>
       <p class="italic hover:opacity-100 opacity-50 transition duration-300">
-        {{ path }}
+        {{ path?.split("?")[0].split("owner")[1] ?? path?.split("?")[0].split(".com")[1] }}
       </p>
       <v-chip class="text-md my-2">
         {{ date }}

@@ -106,7 +106,8 @@ const addNote = async (): Promise<void> => {
   loadingNotes.value = true
   const secrets: any = { userSub: subD.value, noteModuleKey: moduleKey.value, apikey: apikey.value }
   const sendNote = await CreateNote(secrets, data)
-  console.log(sendNote)
+  const sendNoteRes = await sendNote.json()
+  console.log(sendNoteRes)
   // console.log(JSON.stringify(data))
   if (!sendNote.ok) {
     renderError.value = 'Adding Note Failed!'
@@ -114,6 +115,7 @@ const addNote = async (): Promise<void> => {
       renderError.value = null
     }, 10000)
     newNote.value = VClipboard.text
+    console.log(VClipboard.text)
   }
   const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
   const allNotes = await allNotesReq.json()
