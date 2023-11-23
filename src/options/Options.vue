@@ -97,7 +97,7 @@ onMounted(async () => {
     // console.log('authed', userE.value.userEmail)
     const user: User = await GetUser('email', userE.value.userEmail)
     console.log(user.documents[0])
-    moduleKey.value = user.documents[0].note_module_key
+    moduleKey.value = user.documents[0].dnote_module_key
     apikey.value = user.documents[0].api_key
     subD.value = user.documents[0].subdomain
     businessNameKnown.value = user.documents[0].subdomain || null
@@ -105,6 +105,7 @@ onMounted(async () => {
     const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
     const allNotes = await allNotesReq.json()
     apiNotes.value = allNotes.data
+    console.log(apikey.value, moduleKey.value)
     notesLen.value = apiNotes.value.length
     totalPages()
 
@@ -305,7 +306,7 @@ onMounted(async () => {
             cols="12"
             sm="4"
           >
-            <VueCard v-if="businessNameKnown" class="m-2 h-full" :num="note.title" :body="extractBody(note.description)" :author="note.staff_id === 0 ? 'Admin' : `User ID: #${note.staff_id}`" :tags="extractTags(note.description)" :date="note.start_date" :path="`https://${subD}.daftra.com${extractPath(note.description)}`" />
+            <VueCard v-if="businessNameKnown" class="m-2 h-full" :num="note.title" :body="extractBody(note.description)" :author="note.staff_id === 0 ? 'Admin' : `User ID: #${note.staff_id}`" :tags="extractTags(note.description)" :date="note.start_date" :path="`https://${subD}.daftra.com${extractPath(note.description)}?from=d-note`" />
           </v-col>
         </v-row>
       </v-container>
@@ -323,7 +324,7 @@ onMounted(async () => {
       </v-container>
       <div class="text-center">
         <v-pagination
-          v-if="apiNotes.length > 0"
+          v-if="apiNotes?.length > 0"
           v-model="page"
           class="text-slate-400 !text-xs"
           :length="totalPages()"

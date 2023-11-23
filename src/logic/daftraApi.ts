@@ -30,7 +30,7 @@ export const GetSiteInfo = async ({ userSub, apikey }: Pick<SecretsTypes, 'userS
 export const GetNotes = async (userSub: string, apikey: string, noteModuleKey: string): Promise<Response> => {
   // const { userSub, apikey, noteModuleKey } = getSecrets()
 
-  const res = await fetch(`https://${userSub}.daftra.com/v2/api/entity/${noteModuleKey}/list?per_page=100000`, {
+  const res = await fetch(`https://${userSub}.daftra.com/v2/api/entity/le_workflow-type-entity-${noteModuleKey}/list/1?per_page=100000`, {
     headers: {
       'Content-Type': 'application/json',
       'apikey': apikey,
@@ -68,7 +68,7 @@ export const CreateNoteModule = async ({ userSub, apikey }: Pick<SecretsTypes, '
 export const CreateNote = async ({ userSub, noteModuleKey, apikey }: Pick<SecretsTypes, 'userSub' | 'noteModuleKey' | 'apikey'>, data: NoteDataApi): Promise<Response> => {
   // console.log(userSub, noteModuleKey, apikey)
 
-  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/${noteModuleKey}`, {
+  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/le_workflow-type-entity-${noteModuleKey}`, {
     method: 'POST',
     // mode: 'no-cors',
     headers: {
@@ -86,7 +86,7 @@ export const CreateNote = async ({ userSub, noteModuleKey, apikey }: Pick<Secret
 export const UpdateNote = async (id: string, data: NoteDataApi): Promise<string> => {
   const { userSub, noteModuleKey, apikey } = getSecrets()
 
-  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/${noteModuleKey}/${id}`, {
+  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/le_workflow-type-entity-${noteModuleKey}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export const UpdateNote = async (id: string, data: NoteDataApi): Promise<string>
 // Delete a note
 export const DeleteNote = async (id: string): Promise<string> => {
   const { userSub, noteModuleKey, apikey } = getSecrets()
-  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/${noteModuleKey}/${id}`, {
+  const res: Response = await fetch(`https://${userSub}.daftra.com/v2/api/entity/le_workflow-type-entity-${noteModuleKey}/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

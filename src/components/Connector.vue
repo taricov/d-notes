@@ -49,7 +49,7 @@ onMounted(async () => {
     console.log('existing user: ', user)
 
     if (user.total > 0) {
-      userSecrets.value.noteModuleKey = user.noteModuleKey
+      userSecrets.value.noteModuleKey = user.dnote_module_key
       userSecrets.value.apikey = user.apikey
       console.log('we r live!')
     }
@@ -97,7 +97,7 @@ async function submit() {
     const moduleKey: any = await GetAllWorkflows({ userSub, apikey })
     userSecrets.value.noteModuleKey = moduleKey.data[0].entity_key
 
-    const userCreated = await CreateUser({ daftra_site_id: `${id}`, business_name, first_name, last_name, subdomain: subdomain.split('.')[0], address1, address2, city, state, phone1, phone2, lang: 'en', country_code, currency_code, email, bn1, api_key: userSecrets.value.apikey, note_module_key: userSecrets.value.noteModuleKey, prefer_dark: true })
+    const userCreated = await CreateUser({ daftra_site_id: `${id}`, business_name, first_name, last_name, subdomain: subdomain.split('.')[0], address1, address2, city, state, phone1, phone2, lang: 'en', country_code, currency_code, email, bn1, api_key: userSecrets.value.apikey, dnote_module_key: userSecrets.value.noteModuleKey, prefer_dark: true })
     console.log(userCreated)
     connecedSound.play()
     // setSecrets(userSecrets.value)
@@ -109,7 +109,7 @@ async function submit() {
     console.log(userEmail)
     console.log('user created successfully')
   }
-  userSecrets.value.noteModuleKey = user.documents[0].noteModuleKey
+  userSecrets.value.noteModuleKey = user.documents[0].dnote_module_key
   userSecrets.value.userEmail = user.documents[0].email
   isConnected.value = true
   loading.value = false

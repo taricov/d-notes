@@ -16,7 +16,6 @@ const apiNotes = ref<any>([])
 // const apiNotes = ref<Note[]>([])
 
 // filtered.value = currPageNotes(notes)
-
 const noteTextarea = ref<HTMLTextAreaElement>()
 // const placeholder = ref<string>('')
 const notingDisabled = ref<boolean>(true)
@@ -63,19 +62,22 @@ onMounted(async () => {
   isConnected.value = !!sec1 && !!sec2
   userE.value = sec3
   console.log('Connected', isConnected.value, userE.value)
+
   if (isConnected && userE.value) {
     const user: User = await GetUser('email', userE.value.userEmail)
     // console.log(user)
     notingDisabled.value = false
-    moduleKey.value = user.documents[0].note_module_key
+    moduleKey.value = user.documents[0].dnote_module_key
     apikey.value = user.documents[0].api_key
     subD.value = user.documents[0].subdomain
-    // console.log(apikey.value, moduleKey.value)
     const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
     const allNotes = await allNotesReq.json()
     apiNotes.value = allNotes.data
     // console.log(apiNotes.value)
     loadingNotes.value = false
+
+    if (new URLSearchParams(location.search).get('from') === 'd-note')
+      drawer.value = true
   }
 })
 
@@ -211,7 +213,7 @@ whenever(keys['\\'], () => {
 
               <v-row no-gutters>
                 <v-col
-                  v-for="note in apiNotes.slice(0, 6)"
+                  v-for="note in apiNotes?.slice(0, 6)"
                   :key="note.id"
                   cols="6"
                   sm="4"
