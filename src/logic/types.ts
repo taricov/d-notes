@@ -4,6 +4,7 @@ export interface NoteDataApi {
   start_date: string
   description: string
   staff_id: string
+  budget: { currency: string }
 }
 
 export interface Number {

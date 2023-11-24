@@ -1,6 +1,6 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
-import connectSound from '../assets/sound effects/connected2.mp3'
+import connectSound from '../assets/sound_effects/connected2.mp3'
 import { getUserData, setUserData } from '../logic/utils'
 import { CreateUser, GetUser } from '../logic/dbSDK'
 import type { User } from '../logic/types'

@@ -16,7 +16,7 @@ let editedNote: any
 <template>
   <v-card
     variant="tonal"
-    class="!min-h-[148px] group !bg-slate-900 !text-slate-300 !transition-all duration-300 shadow-lg hover:-translate-y-1 transform !z-10"
+    class="group  flex flex-col !bg-slate-900 !text-slate-300 !transition-all duration-300 shadow-lg hover:-translate-y-1 transform !z-10 space-y-3 py-3"
   >
     <div class="group-hover:opacity-100 opacity-30 mt-4 transition duration-300">
       {{ num }}
@@ -29,14 +29,14 @@ let editedNote: any
       </div>
     </v-container>
 
-    <v-container class="mt-5">
+    <v-container class="mt-5 flex-1">
       <p class="text-lg font-semibold">
         {{ author }}
       </p>
       <p class="italic hover:opacity-100 opacity-50 transition duration-300">
         {{ path?.split("?")[0].split("owner")[1] ?? path?.split("?")[0].split(".com")[1] }}
       </p>
-      <v-chip class="text-md my-2">
+      <v-chip class="text-xs my-2">
         {{ date }}
       </v-chip>
       <p class="text-md h-15 px-3 py-2 my-2 line-clamp-3">

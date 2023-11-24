@@ -43,7 +43,7 @@ const openOptionsPage = () => {
       </span>
     </div>
     <p class="btn transition duration-300 text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 to-sky-700">
-      Stay organized
+      Stay Noted
     </p>
     <h1 class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 mb-4 text-4xl font-extrabold md:text-5xl lg:text-6xl dark:text-white">
       D-Notes

@@ -8,7 +8,7 @@ import { GetUser } from '~/logic/dbSDK'
 import { extractBody, extractPath, extractTags, getUserData } from '~/logic/utils'
 
 const page = ref<Number>(1)
-const notesPerPage = ref<Number>(3)
+const notesPerPage = ref<Number>(9)
 const notesLen = ref<Number>(0)
 
 const apiNotes = ref<any>([])
@@ -27,9 +27,10 @@ const selectedColors = ref<String[]>([])
 const allPeriods = ref<String[]>(['Last Hour', 'Yesterday', 'Last 5 days', 'Last Week', 'Last 30 days'])
 const allRoutes = ref<String[]>(['/work-order', '/dashboard', '/invoices', '/invoices/23'])
 const selectedRoutes = ref<String[]>([])
-const apikey = ref<string>('')
-const subD = ref<string>('')
-const moduleKey = ref<string>('')
+const apikey = ref<String>('')
+const subD = ref<String>('')
+const moduleKey = ref<String>('')
+const userData = ref<any>(null)
 
 const dateFrom = ref()
 const dateTo = ref()
@@ -97,8 +98,9 @@ onMounted(async () => {
     // console.log('authed', userE.value.userEmail)
     const user: User = await GetUser('email', userE.value.userEmail)
     console.log(user.documents[0])
+    userData.value = user.documents[0]
     moduleKey.value = user.documents[0].dnote_module_key
-    apikey.value = user.documents[0].api_key
+    apikey.value = user.documents[0].apikey
     subD.value = user.documents[0].subdomain
     businessNameKnown.value = user.documents[0].subdomain || null
     // console.log(apikey.value, moduleKey.value)
@@ -137,7 +139,7 @@ onMounted(async () => {
     <main class="px-4 py-10 text-center text-gray-700 dark:text-gray-200">
       <span v-if="businessNameKnown" class="bg-sky-400 bg-opacity-5 px-3 py-1 w-fit rounded inline-block ">
         <p class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 text-lg font-bold md:text-xl lg:text-2xl dark:text-white">
-          Welcome {{ businessNameKnown }}!
+          Welcome {{ `${userData?.first_name} ${userData?.last_name}` }}!
         </p>
       </span>
       <h1 class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 mb-4 text-4xl font-extrabold md:text-5xl lg:text-6xl dark:text-white">

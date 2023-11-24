@@ -2,10 +2,8 @@
 <script setup lang="ts">
 import 'uno.css'
 import { useClipboard, useMagicKeys, whenever } from '@vueuse/core'
-import newNoteSound from '../../assets/sound effects/newNote.mp3'
-// import notes from '../../fakedata'
+import newNoteSound from '../../assets/sound_effects/newNote.mp3'
 import { CreateNote, GetNotes } from '../../logic/daftraApi'
-// import { currPageNotes } from '../../logic/utils'
 import type { NoteDataApi, User } from '../../logic/types'
 import { GetUser } from '~/logic/dbSDK'
 import { extractBody, extractColor, extractPath, getUserData } from '~/logic/utils'
@@ -21,7 +19,7 @@ const noteTextarea = ref<HTMLTextAreaElement>()
 const notingDisabled = ref<boolean>(true)
 const apikey = ref<string>('')
 const subD = ref<string>('')
-const moduleKey = ref<string>('')
+const moduleKey = ref<Number | null>(null)
 const form = ref<HTMLFormElement>()
 const isLoading = ref<boolean>(false)
 const loadingNotes = ref<boolean>(false)
@@ -61,15 +59,15 @@ onMounted(async () => {
   // const chromeStorage2: any = await getStorageValuePromise('email')
   isConnected.value = !!sec1 && !!sec2
   userE.value = sec3
-  console.log('Connected', isConnected.value, userE.value)
 
   if (isConnected && userE.value) {
     const user: User = await GetUser('email', userE.value.userEmail)
     // console.log(user)
     notingDisabled.value = false
     moduleKey.value = user.documents[0].dnote_module_key
-    apikey.value = user.documents[0].api_key
+    apikey.value = user.documents[0].apikey
     subD.value = user.documents[0].subdomain
+    console.log(user)
     const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
     const allNotes = await allNotesReq.json()
     apiNotes.value = allNotes.data
@@ -81,10 +79,13 @@ onMounted(async () => {
   }
 })
 
-const addNote = async (): Promise<void> => {
+const addNote = async (e: KeyboardEvent): Promise<void> => {
+  e.preventDefault()
+  if (e.key === 'ENTER' && e.ctrlKey)
+    console.log(e)
+
   const VClipboard = useClipboard()
   VClipboard.copy(newNote.value)
-  console.log(VClipboard.text)
   form.value?.reset()
   const today = new Date()
   const formattedToday = today.toISOString().split('T')[0]
@@ -95,32 +96,39 @@ const addNote = async (): Promise<void> => {
       generated: '1',
       code: '1',
     },
+    budget: { currency: 'EGP' },
     title: `Note no. ${noteNun}`,
     start_date: formattedToday,
     description: `${newNote.value}|path:${thisPath}`,
     staff_id: '0',
 
   }
+  // console.log('USER', document.querySelector('#main-content > div > div.header.clearfix > div > div > div.col-md-4.col-sm-4.col-xs-5 > div > ul > li.dropdown'))
   const msgSound: any = new Audio(newNoteSound)
   msgSound.play()
   loadingNotes.value = true
   const secrets: any = { userSub: subD.value, noteModuleKey: moduleKey.value, apikey: apikey.value }
-  const sendNote = await CreateNote(secrets, data)
-  const sendNoteRes = await sendNote.json()
-  console.log(sendNoteRes)
-  // console.log(JSON.stringify(data))
-  if (!sendNote.ok) {
-    renderError.value = 'Adding Note Failed!'
-    setTimeout(() => {
-      renderError.value = null
-    }, 10000)
-    newNote.value = VClipboard.text
-    console.log(VClipboard.text)
+  try {
+    const sendNote = await CreateNote(secrets, data)
+    const sendNoteRes = await sendNote.json()
+    // console.log(sendNote, sendNoteRes)
+    // console.log(JSON.stringify(data))
+    if (!sendNote.ok) {
+      console.log(sendNote)
+      renderError.value = 'Adding Note Failed!'
+      setTimeout(() => {
+        newNote.value = VClipboard.text
+        renderError.value = null
+      }, 3000)
+    }
   }
+  catch (err) { console.log('err', err === 'SyntaxError' ? 'yes' : 'no') }
   const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
   const allNotes = await allNotesReq.json()
+  console.log(allNotes)
   apiNotes.value = allNotes.data
   loadingNotes.value = false
+  newNote.value = ''
 }
 
 const keys = useMagicKeys()
@@ -129,9 +137,6 @@ whenever(keys.escape, () => {
 })
 whenever(keys['\\'], () => {
   drawer.value = true
-  console.log('before', newNote.value)
-  newNote.value = 'Hello....'
-  console.log('after', newNote.value)
   // noteTextarea.value?.focus()
   newNote.value = ''
 })
@@ -184,7 +189,7 @@ whenever(keys['\\'], () => {
           <v-window-item
             value="page-notes"
           >
-            <v-container class="!bg-slate-100 !bg-opacity-2 text-center ">
+            <v-container class="!bg-slate-100 !bg-opacity-2 text-center h-[575px] overflow-scroll">
               <v-progress-circular v-show="loadingNotes" color="green" indeterminate />
               <p v-show="renderError !== null" class="w-full text-center text-red-500 font-semibold">
                 {{ renderError }}
@@ -262,6 +267,27 @@ whenever(keys['\\'], () => {
 </template>
 
 <style>
+::-webkit-scrollbar {
+    width: .4em;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.09)
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color:#21a6a7;
+    border-radius: 15px;
+  }
+  ::-webkit-scrollbar-button {
+    background: rgba(0,0,0,.09)
+  }
+  ::-webkit-scrollbar-corner {
+    background: rgba(0,0,0,.09)
+}
+.v-card{
+  @apply min-h-[150px]
+}
 .v-navigation-drawer__scrim{
   position: fixed
 }
