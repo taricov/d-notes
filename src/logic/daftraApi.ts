@@ -45,7 +45,7 @@ export const GetNotes = async (userSub: string, apikey: string, noteModuleKey: s
 export const CreateNoteModule = async ({ userSub, apikey }: Pick<SecretsTypes, 'userSub' | 'apikey'>): Promise<Response> => {
   // const { userSub, apikey } = getSecrets()
   const data: WorkflowDataApi = {
-    name: 'D-Notes Module',
+    name: 'D-Note Module',
     status: 1,
     singular_title: 'Note',
   }

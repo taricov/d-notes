@@ -46,12 +46,12 @@ const openOptionsPage = () => {
       Stay Noted
     </p>
     <h1 class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 mb-4 text-4xl font-extrabold md:text-5xl lg:text-6xl dark:text-white">
-      D-Notes
+      D-Note
       <span class="bg-blue-100 text-blue-800 text-2xl font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-2">Free</span>
     </h1>
 
     <p v-if="isConnected" class="mb-6 text-lg font-normal lg:text-xl sm:px-16 xl:px-48 text-gray-300">
-      D-Notes is a business utility app for taking notes per page in Daftra ERP. All notes are stored securely and can be accessed from the
+      D-Note is a business utility app for taking notes per page in Daftra ERP. All notes are stored securely and can be accessed from the
       <button class=" transition-all duration-200 bg-sky-400/40 transition duration-300 rounded px-1 hover:text-sky-300 hover:bg-sky-400/10" @click="openOptionsPage">
         Dashboard
       </button>

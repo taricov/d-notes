@@ -1,6 +1,6 @@
 {
-  "name": "d-notes",
-  "displayName": "D-Notes",
+  "name": "d-note",
+  "displayName": "D-Note",
   "version": "1.0.1",
   "private": true,
   "packageManager": "pnpm@8.3.1",
