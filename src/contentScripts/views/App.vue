@@ -86,7 +86,9 @@ onMounted(async () => {
 
 const addNote = async (e: any): Promise<void> => {
   e.preventDefault()
-  const currentUser = document.querySelector('#main-content > div > div.header.clearfix > div > div > div.col-md-4.col-sm-4.col-xs-5 > div > ul > li:nth-child(6) > a > span:nth-child(2)')?.textContent?.split('\n')[1].trim()
+  const currentUser = location.href.includes('v2')
+    ? document.querySelector('#user-dropdown > span')?.textContent?.split('\n')[1].trim()
+    : document.querySelector('#main-content > div > div.header.clearfix > div > div > div.col-md-4.col-sm-4.col-xs-5 > div > ul > li:nth-child(6) > a > span:nth-child(2)')?.textContent?.split('\n')[1].trim()
   const VClipboard = useClipboard()
   VClipboard.copy(newNote.value)
   form.value?.reset()

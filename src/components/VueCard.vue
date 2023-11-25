@@ -34,7 +34,7 @@ let editedNote: any
         {{ author }}
       </p>
       <p class="italic hover:opacity-100 opacity-50 transition duration-300">
-        {{ path?.split("?")[0].split("owner")[1] ?? path?.split("?")[0].split(".com")[1] }}
+        {{ path?.includes("sites") ? path?.split("?")[0].split("/owner/sites")[1] : path?.split("?")[0].split("/owner")[1] }}
       </p>
       <v-chip class="text-xs my-2">
         {{ date }}
