@@ -5,7 +5,7 @@ import 'vuetify/styles'
 import type { Note, User } from '~/logic/types'
 import { GetNotes } from '~/logic/daftraApi'
 import { GetUser } from '~/logic/dbSDK'
-import { extractBody, extractPath, extractTags, getUserData } from '~/logic/utils'
+import { extractBody, extractPath, extractTags, extractUser, getUserData } from '~/logic/utils'
 
 const page = ref<Number>(1)
 const notesPerPage = ref<Number>(9)
@@ -308,7 +308,7 @@ onMounted(async () => {
             cols="12"
             sm="4"
           >
-            <VueCard v-if="businessNameKnown" class="m-2 h-full" :num="note.title" :body="extractBody(note.description)" :author="note.staff_id === 0 ? 'Admin' : `User ID: #${note.staff_id}`" :tags="extractTags(note.description)" :date="note.start_date" :path="`https://${subD}.daftra.com${extractPath(note.description)}?from=d-note`" />
+            <VueCard v-if="businessNameKnown" class="m-2 h-full" :num="note.title" :body="extractBody(note.description)" :author="extractUser(note.description)" :tags="extractTags(note.description)" :date="note.start_date" :path="`https://${subD}.daftra.com${extractPath(note.description)}?from=d-note`" />
           </v-col>
         </v-row>
       </v-container>

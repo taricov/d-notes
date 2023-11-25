@@ -63,9 +63,13 @@ export const extractPath = (desc: string): string => {
   const path = desc.split('|path:')[1]
   return path === '/' ? '/dashboard' : path
 }
+export const extractUser = (desc: string): string => {
+  const user = desc.split(']:')[0].slice(1)
+  return user ?? 'Admin'
+}
 export const extractBody = (desc: string): string => {
   const body = desc.split('|path:')[0].replaceAll(/#(?!\s)/g, '')
-  return body
+  return body.split(']:')[1]
 }
 export const extractTags = (body: string): string[] => {
   const regex = /#\s*([a-zA-Z]+)/g

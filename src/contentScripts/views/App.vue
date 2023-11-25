@@ -6,7 +6,7 @@ import newNoteSound from '../../assets/sound_effects/newNote.mp3'
 import { CreateNote, GetNotes } from '../../logic/daftraApi'
 import type { NoteDataApi, User } from '../../logic/types'
 import { GetUser } from '~/logic/dbSDK'
-import { extractBody, extractColor, extractPath, getUserData } from '~/logic/utils'
+import { extractBody, extractColor, extractPath, extractUser, getUserData } from '~/logic/utils'
 
 const tabs = ref<any>('recently-added')
 // const filtered = ref<Note[]>([])
@@ -79,18 +79,16 @@ onMounted(async () => {
   }
 })
 
-const addNote = async (e: KeyboardEvent): Promise<void> => {
+const addNote = async (e: any): Promise<void> => {
   e.preventDefault()
-  if (e.key === 'ENTER' && e.ctrlKey)
-    console.log(e)
-
+  const currentUser = document.querySelector('#main-content > div > div.header.clearfix > div > div > div.col-md-4.col-sm-4.col-xs-5 > div > ul > li:nth-child(6) > a > span:nth-child(2)')?.textContent?.split('\n')[1].trim()
   const VClipboard = useClipboard()
   VClipboard.copy(newNote.value)
   form.value?.reset()
   const today = new Date()
   const formattedToday = today.toISOString().split('T')[0]
   const noteNun = apiNotes.value.length + 1
-  const thisPath: string = window.location.pathname
+  const thisPath: string = location.pathname.split('?from=d-note')
   const data: NoteDataApi = {
     number: {
       generated: '1',
@@ -99,7 +97,7 @@ const addNote = async (e: KeyboardEvent): Promise<void> => {
     budget: { currency: 'EGP' },
     title: `Note no. ${noteNun}`,
     start_date: formattedToday,
-    description: `${newNote.value}|path:${thisPath}`,
+    description: `[${currentUser}]:${newNote.value}|path:${thisPath}`,
     staff_id: '0',
 
   }
@@ -201,13 +199,13 @@ whenever(keys['\\'], () => {
                   cols="6"
                   sm="4"
                 >
-                  <v-text v-if="!isConnected && !userE" class="text-3xl font-bold">
+                  <p v-if="!isConnected && !userE" class="text-3xl font-bold">
                     Please Connect to start using the app...
-                  </v-text>
-                  <v-text v-if="!isConnected && apiNotes.length === 0" class="text-3xl font-bold">
+                  </p>
+                  <p v-if="!isConnected && apiNotes.length === 0" class="text-3xl font-bold">
                     You don't have any notes to display, start noting..
-                  </v-text>
-                  <VueCompact v-if="isConnected && userE" class="m-2" :body="extractBody(note.description)" :author="note.staff_id === 0 ? 'Admin' : `User ID: #${note.staff_id}`" :date="note.start_date" :path="note.description.split('[path]')[1]" />
+                  </p>
+                  <VueCompact v-if="isConnected && userE" class="m-2" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="note.description.split('[path]')[1]" />
                 </v-col>
               </v-row>
             </v-container>
@@ -225,13 +223,13 @@ whenever(keys['\\'], () => {
                   cols="6"
                   sm="4"
                 >
-                  <v-text v-if="!isConnected && !userE">
+                  <p v-if="!isConnected && !userE">
                     Please Connect to start using the app...
-                  </v-text>
-                  <v-text v-if="isConnected && apiNotes.length === 0">
+                  </p>
+                  <p v-if="isConnected && apiNotes.length === 0">
                     You don't have any notes to display, start noting..
-                  </v-text>
-                  <VueCompact v-if="isConnected && userE" class="m-2" :color="extractColor(note.description)" :body="extractBody(note.description)" :author="note.staff_id === 0 ? 'Admin' : `User ID: #${note.staff_id}`" :date="note.start_date" :path="note.description.split('[path]')[1]" />
+                  </p>
+                  <VueCompact v-if="isConnected && userE" class="m-2" :color="extractColor(note.description)" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="note.description.split('|path:')[1]" />
                 </v-col>
               </v-row>
             </v-container>
@@ -247,14 +245,14 @@ whenever(keys['\\'], () => {
         <!-- </v-container> -->
       </v-container>
       <v-container fluid>
-        <form ref="form" @submit.prevent="addNote">
+        <form ref="form" @submit="addNote">
           <v-textarea
             ref="noteTextarea"
             v-model="newNote"
             :disabled="notingDisabled"
             required
             no-resize
-            label="Press Shift + Enter to add notes"
+            label="Press Enter to add a new note"
             variant="outlined"
             class="text-gray-200"
             :loading="isLoading"
@@ -276,8 +274,7 @@ whenever(keys['\\'], () => {
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color:#21a6a7;
-    border-radius: 15px;
+    @apply bg-sky-400 rounded-full
   }
   ::-webkit-scrollbar-button {
     background: rgba(0,0,0,.09)
