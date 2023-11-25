@@ -40,6 +40,13 @@ For Firefox developers, you can run the following command instead:
 pnpm start:firefox
 ```
 
+### TODO:
+[] -- Formate note on typing (tags/colors)
+[] -- Add colors to notes body
+[] -- Filters 
+[] -- Search bar
+
+
 ### Build
 
 To build the extension, run
