@@ -47,7 +47,7 @@ let editedNote: any
           {{ tag }}
         </span> -->
         <v-chip v-for="tag in tags" :key="tag" variant="elevated" class="!bg-sky-100 !bg-opacity-5 !text-sky-200 !text-xs">
-          {{ tag }}
+          {{ `#${tag}` }}
         </v-chip>
       </div>
     </v-container>

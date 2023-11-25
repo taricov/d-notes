@@ -30,6 +30,11 @@ const userE = ref<any>('')
 const isConnected = ref<any>(true)
 const renderError = ref<string | null>(null)
 
+// noteFormatter(newNote.value)
+// const noteFormatter = (txt:string) => {
+//   txt.map(letter=>)
+// }
+
 const toggleDrawer = (): void => {
   drawer.value = !drawer.value
   noteTextarea.value?.focus()
@@ -97,7 +102,7 @@ const addNote = async (e: any): Promise<void> => {
     budget: { currency: 'EGP' },
     title: `Note no. ${noteNun}`,
     start_date: formattedToday,
-    description: `[${currentUser}]:${newNote.value}|path:${thisPath}`,
+    description: `[[${currentUser}]]:${newNote.value}|path:${thisPath}`,
     staff_id: '0',
 
   }
@@ -205,7 +210,7 @@ whenever(keys['\\'], () => {
                   <p v-if="!isConnected && apiNotes.length === 0" class="text-3xl font-bold">
                     You don't have any notes to display, start noting..
                   </p>
-                  <VueCompact v-if="isConnected && userE" class="m-2" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="note.description.split('[path]')[1]" />
+                  <VueCompact v-if="isConnected && userE" class="m-2" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="extractPath(note.description)" />
                 </v-col>
               </v-row>
             </v-container>
@@ -213,7 +218,7 @@ whenever(keys['\\'], () => {
           <v-window-item
             value="recently-added"
           >
-            <v-container class="!bg-slate-100 !bg-opacity-2 text-center">
+            <v-container class="!bg-slate-100 !bg-opacity-2 text-center h-[385px]">
               <v-progress-circular v-show="loadingNotes" color="green" indeterminate />
 
               <v-row no-gutters>
