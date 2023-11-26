@@ -47,7 +47,6 @@ const thisPageNotes = () => {
 }
 
 onMounted(async () => {
-  thisPageNotes()
   loadingNotes.value = true
   // const { userEmail, userSub } = getSecrets()
   // function getStorageValuePromise(key: string) {
@@ -59,24 +58,25 @@ onMounted(async () => {
   const sec1: any = await getUserData('userSub')
   const sec2: any = await getUserData('apikey')
   const sec3: any = await getUserData('userEmail')
-
+  console.log(sec1, sec2, sec3)
   // const chromeStorage1: any = await getStorageValuePromise('conn')
   // const chromeStorage2: any = await getStorageValuePromise('email')
-  isConnected.value = !!sec1 && !!sec2
-  userE.value = sec3
+  isConnected.value = !!sec1.userSub && !!sec3.userEmail
+  userE.value = sec3.userEmail
+  if (!isConnected.value && !userE.value)
+    loadingNotes.value = false
 
-  if (isConnected && userE.value) {
-    const user: User = await GetUser('email', userE.value.userEmail)
-    // console.log(user)
+  if (isConnected.value && userE.value) {
+    const user: User = await GetUser('email', userE.value)
+    console.log(user)
     notingDisabled.value = false
     moduleKey.value = user.documents[0].dnote_module_key
     apikey.value = user.documents[0].apikey
     subD.value = user.documents[0].subdomain
-    console.log(user)
     const allNotesReq = await GetNotes(subD.value, apikey.value, moduleKey.value)
+    thisPageNotes()
     const allNotes = await allNotesReq.json()
     apiNotes.value = allNotes.data
-    // console.log(apiNotes.value)
     loadingNotes.value = false
 
     if (new URLSearchParams(location.search).get('from') === 'd-note')
@@ -194,7 +194,12 @@ whenever(keys['\\'], () => {
           <v-window-item
             value="page-notes"
           >
-            <v-container class="!bg-slate-100 !bg-opacity-2 text-center h-[575px] overflow-scroll">
+            <v-container v-if="!isConnected" class="!bg-slate-100 flex items-center justify-center !bg-opacity-2 text-center h-[575px] overflow-scroll">
+              <p class="text-3xl font-bold  text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                Please Connect to start using the app...
+              </p>
+            </v-container>
+            <v-container v-if="isConnected" class="!bg-slate-100 !bg-opacity-2 text-center h-[575px] overflow-scroll">
               <v-progress-circular v-show="loadingNotes" color="green" indeterminate />
               <p v-show="renderError !== null" class="w-full text-center text-red-500 font-semibold">
                 {{ renderError }}
@@ -206,13 +211,10 @@ whenever(keys['\\'], () => {
                   cols="6"
                   sm="4"
                 >
-                  <p v-if="!isConnected && !userE" class="text-3xl font-bold">
-                    Please Connect to start using the app...
-                  </p>
-                  <p v-if="!isConnected && apiNotes.length === 0" class="text-3xl font-bold">
+                  <p v-if="isConnected && thisPageNotes().length === 0" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
                     You don't have any notes to display, start noting..
                   </p>
-                  <VueCompact v-if="isConnected && userE" class="m-2" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="extractPath(note.description)" />
+                  <VueCompact v-else class="m-2" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="extractPath(note.description)" />
                 </v-col>
               </v-row>
             </v-container>
@@ -220,7 +222,12 @@ whenever(keys['\\'], () => {
           <v-window-item
             value="recently-added"
           >
-            <v-container class="!bg-slate-100 !bg-opacity-2 text-center h-[385px]">
+            <v-container v-if="!isConnected" class="!bg-slate-100 flex items-center justify-center !bg-opacity-2 text-center h-[385px] overflow-scroll">
+              <p class="text-3xl font-bold  text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
+                Please Connect to start using the app...
+              </p>
+            </v-container>
+            <v-container v-if="isConnected" class="!bg-slate-100 !bg-opacity-2 text-center h-[385px]">
               <v-progress-circular v-show="loadingNotes" color="green" indeterminate />
 
               <v-row no-gutters>
@@ -230,13 +237,10 @@ whenever(keys['\\'], () => {
                   cols="6"
                   sm="4"
                 >
-                  <p v-if="!isConnected && !userE">
-                    Please Connect to start using the app...
-                  </p>
                   <p v-if="isConnected && apiNotes.length === 0">
                     You don't have any notes to display, start noting..
                   </p>
-                  <VueCompact v-if="isConnected && userE" class="m-2" :color="extractColor(note.description)" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="note.description.split('|path:')[1]" />
+                  <VueCompact v-else class="m-2" :color="extractColor(note.description)" :body="extractBody(note.description)" :author="extractUser(note.description)" :date="note.start_date" :path="note.description.split('|path:')[1]" />
                 </v-col>
               </v-row>
             </v-container>

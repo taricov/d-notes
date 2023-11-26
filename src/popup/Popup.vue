@@ -16,12 +16,14 @@ onMounted(async () => {
   // const sec2: any = await getUserData('apikey')
   const sec3: any = await getUserData('userEmail')
   bizName.value = sec1
-  isConnected.value = !!sec1 && !!sec3
+  isConnected.value = !!sec1.userSub && !!sec3.userEmail
+
   // currtheme.value = theme
   // currLang.value = lang
   // isConnected.value = connectionStatus
   const user: User = await GetUser('email', sec3.userEmail)
-  if (+user.total !== 0)
+  console.log(sec1, sec3, user, isConnected.value)
+  if (+user.total)
     isConnected.value = true
   color.value = isConnected.value ? 'text-emerald-500' : 'text-red-500'
   // chrome.storage.local.set({ conn: isConnected.value, email: sec2.userEmail })
